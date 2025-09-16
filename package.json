@@ -1,6 +1,6 @@
 {
 	"name": "@kishornaik/utils",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "",
 	"main": "dist/core/index.js",
 	"type": "commonjs",
@@ -35,12 +35,12 @@
 	"devDependencies": {
 		"@faker-js/faker": "^9.8.0",
 		"@swc/cli": "^0.7.7",
-		"@swc/core": "^1.11.29",
+		"@swc/core": "^1.13.5",
 		"@types/autocannon": "^7.12.7",
 		"@types/bcrypt": "^5.0.2",
 		"@types/glob": "^8.1.0",
 		"@types/ioredis": "^4.28.10",
-		"@types/node": "^22.15.21",
+		"@types/node": "^22.18.4",
 		"@types/sinon": "^17.0.4",
 		"autocannon": "^8.0.0",
 		"cross-env": "^7.0.3",
@@ -66,13 +66,13 @@
 		"@types/pg": "^8.15.4",
 		"@types/redis": "^4.0.11",
 		"amqp-connection-manager": "^4.1.14",
-		"amqplib": "^0.10.5",
+		"amqplib": "^0.10.9",
 		"axios": "^1.9.0",
 		"bcrypt": "^6.0.0",
-		"bullmq": "^5.53.0",
+		"bullmq": "^5.58.5",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.2",
-		"class-validator-jsonschema": "^5.0.2",
+		"class-validator-jsonschema": "^5.1.0",
 		"cls-hooked": "^4.2.2",
 		"consul": "^2.0.1",
 		"cron": "^4.3.1",
@@ -96,7 +96,7 @@
 		"uuid": "^11.1.0",
 		"winston": "^3.17.0",
 		"winston-daily-rotate-file": "^5.0.0",
-		"workerpool": "^9.3.3"
+		"workerpool": "^9.3.4"
 	},
 	"publishConfig": {
 		"registry": "https://registry.npmjs.org/"
