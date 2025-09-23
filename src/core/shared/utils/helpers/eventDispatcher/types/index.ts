@@ -7,15 +7,15 @@ export enum ReplayableEventDispatcher {
 
 export interface SendReceiverMessageEventDispatcher<T> {
 	data: T;
-	traceId?: string;
-	correlationId?: string;
+	traceId: string;
+	correlationId: string;
 	timestamp?: string;
 }
 
 export interface RequestReplyEventDispatcher<T> {
 	data: T;
-	traceId?: string;
-	correlationId?: string;
+	traceId: string;
+	correlationId: string;
 	timestamp?: string;
 }
 
