@@ -1,12 +1,12 @@
 import { EventDispatcher } from '../../../core';
-import { ReplyMessageEventDispatcher, RequestReplyEventDispatcher } from '../../../types';
+import { ReplyMessageEventDispatcher, RequestReplyMessageEventDispatcher } from '../../../types';
 
 export class RequestReplyProducerEventDispatcher {
 	constructor(private dispatcher: EventDispatcher) {}
 
 	public async sendAsync<TRequest, TReply>(
 		eventType: string,
-		data: RequestReplyEventDispatcher<TRequest>
+		data: RequestReplyMessageEventDispatcher<TRequest>
 	): Promise<ReplyMessageEventDispatcher<TReply>> {
 		if (!eventType) throw new Error('Event type is required');
 		if (!data) throw new Error('Data is required');
