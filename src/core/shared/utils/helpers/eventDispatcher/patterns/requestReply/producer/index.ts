@@ -11,7 +11,6 @@ export class RequestReplyProducerEventDispatcher {
 		if (!eventType) throw new Error('Event type is required');
 		if (!data) throw new Error('Data is required');
 
-
 		const replyType = `reply:${data.correlationId}`;
 
 		return new Promise<ReplyMessageEventDispatcher<TReply>>((resolve, reject) => {
