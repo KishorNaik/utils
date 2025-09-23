@@ -1,4 +1,3 @@
-export * from '../../shared/medaitR';
 export * from '../../shared/models/constant';
 export * from '../../shared/models/enums/bool.enum';
 export * from '../../shared/models/enums/status.enum';
