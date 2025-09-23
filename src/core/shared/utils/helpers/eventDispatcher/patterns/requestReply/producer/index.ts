@@ -6,24 +6,13 @@ export class RequestReplyProducerEventDispatcher {
 
 	public async sendAsync<TRequest, TReply>(
 		eventType: string,
-		data: TRequest,
-		meta: Partial<RequestReplyEventDispatcher<TRequest>>
+		data: RequestReplyEventDispatcher<TRequest>
 	): Promise<ReplyMessageEventDispatcher<TReply>> {
 		if (!eventType) throw new Error('Event type is required');
 		if (!data) throw new Error('Data is required');
-		if (!meta) throw new Error('Meta is required');
 
-		const correlationId = meta?.correlationId ?? crypto.randomUUID();
-		const traceId = meta?.traceId ?? crypto.randomUUID();
-		const timestamp = meta?.timestamp ?? new Date().toISOString();
-		const replyType = `reply:${correlationId}`;
 
-		const event: RequestReplyEventDispatcher<TRequest> = {
-			data,
-			correlationId,
-			traceId,
-			timestamp,
-		};
+		const replyType = `reply:${data.correlationId}`;
 
 		return new Promise<ReplyMessageEventDispatcher<TReply>>((resolve, reject) => {
 			const replyHandler = async (
@@ -41,7 +30,7 @@ export class RequestReplyProducerEventDispatcher {
 			};
 
 			this.dispatcher.onReplyOnce(replyType, replyHandler);
-			this.dispatcher.publishRequest(eventType, event);
+			this.dispatcher.publishRequest(eventType, data);
 		});
 	}
 }
