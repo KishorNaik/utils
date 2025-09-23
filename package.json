@@ -1,6 +1,6 @@
 {
 	"name": "@kishornaik/utils",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "",
 	"main": "dist/core/index.js",
 	"type": "commonjs",
