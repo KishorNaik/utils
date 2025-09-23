@@ -1,10 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
 
-export enum ReplayableEventDispatcher {
-	YES = 'YES',
-	NO = 'NO',
-}
-
 export interface SendReceiverMessageEventDispatcher<T> {
 	data: T;
 	traceId: string;
