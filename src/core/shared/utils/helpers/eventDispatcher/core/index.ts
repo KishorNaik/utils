@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import {
 	ReplyMessageEventDispatcher,
-	RequestReplyEventDispatcher,
+	RequestReplyMessageEventDispatcher,
 	SendReceiverMessageEventDispatcher,
 } from '../types';
 
@@ -40,7 +40,7 @@ export class EventDispatcher {
 
 	public async publishRequest<T>(
 		eventType: string,
-		event: RequestReplyEventDispatcher<T>
+		event: RequestReplyMessageEventDispatcher<T>
 	): Promise<void> {
 		this.emitter.emit(eventType, event);
 	}
@@ -54,7 +54,7 @@ export class EventDispatcher {
 
 	public async onRequest<T>(
 		eventType: string,
-		handler: (event: RequestReplyEventDispatcher<T>) => Promise<void>
+		handler: (event: RequestReplyMessageEventDispatcher<T>) => Promise<void>
 	): Promise<void> {
 		this.emitter.on(eventType, async (event) => {
 			await handler(event);

@@ -7,7 +7,7 @@ export interface SendReceiverMessageEventDispatcher<T> {
 	timestamp?: string;
 }
 
-export interface RequestReplyEventDispatcher<T> {
+export interface RequestReplyMessageEventDispatcher<T> {
 	data: T;
 	traceId: string;
 	correlationId: string;
