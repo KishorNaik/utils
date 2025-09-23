@@ -5,23 +5,13 @@ import {
 	SendReceiverMessageEventDispatcher,
 } from '../types';
 
-const MAX_REPLAY_BUFFER = 100;
-
 export class EventDispatcher {
 	private emitter = new EventEmitter();
-	private replayBuffer: Map<string, SendReceiverMessageEventDispatcher<any>[]> = new Map();
 
 	public async publish<T>(
 		eventType: string,
-		event: SendReceiverMessageEventDispatcher<T>,
-		replayable = false
+		event: SendReceiverMessageEventDispatcher<T>
 	): Promise<void> {
-		if (replayable) {
-			const buffer = this.replayBuffer.get(eventType) ?? [];
-			buffer.push(event);
-			if (buffer.length > MAX_REPLAY_BUFFER) buffer.shift();
-			this.replayBuffer.set(eventType, buffer);
-		}
 		this.emitter.emit(eventType, event);
 	}
 
@@ -36,21 +26,16 @@ export class EventDispatcher {
 
 	public async subscribe<T>(
 		eventType: string,
-		handler: (event: SendReceiverMessageEventDispatcher<T>) => Promise<void>,
-		replay = false
+		handler: (event: SendReceiverMessageEventDispatcher<T>) => Promise<void>
 	): Promise<void> {
-		this.emitter.on(eventType, async (event) => {
-			await handler(event);
-		});
+		this.emitter.on(eventType, handler);
+	}
 
-		if (replay) {
-			const buffer = this.replayBuffer.get(eventType);
-			if (buffer) {
-				for (const event of buffer) {
-					await handler(event);
-				}
-			}
-		}
+	public async unsubscribe<T>(
+		eventType: string,
+		handler: (event: SendReceiverMessageEventDispatcher<T>) => Promise<void>
+	): Promise<void> {
+		this.emitter.off(eventType, handler);
 	}
 
 	public async publishRequest<T>(
