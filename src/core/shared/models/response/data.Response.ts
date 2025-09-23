@@ -17,4 +17,6 @@ export class DataResponse<TData> {
 	message?: string;
 	pagination?: PaginationDataResponseModel;
 	timestamp?: string;
+	traceId?: string;
+	metaData?: unknown;
 }

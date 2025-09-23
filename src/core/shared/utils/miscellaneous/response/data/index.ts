@@ -12,7 +12,9 @@ export class DataResponseFactory {
 		statusCode?: StatusCodes,
 		data?: TData,
 		message?: string,
-		pagination?: PaginationDataResponseModel
+		pagination?: PaginationDataResponseModel,
+		traceId?: string,
+		metaData?: unknown
 	): DataResponse<TData> {
 		return {
 			success: success,
@@ -21,6 +23,8 @@ export class DataResponseFactory {
 			message: message,
 			pagination: pagination,
 			timestamp: new Date().toISOString(),
+			traceId: traceId,
+			metaData: metaData,
 		};
 	}
 
@@ -28,7 +32,9 @@ export class DataResponseFactory {
 		statusCode?: StatusCodes,
 		data?: TData,
 		message?: string,
-		pagination?: PaginationDataResponseModel
+		pagination?: PaginationDataResponseModel,
+		traceId?: string,
+		metaData?: unknown
 	): DataResponse<TData> {
 		return {
 			success: true,
@@ -37,13 +43,17 @@ export class DataResponseFactory {
 			message: message,
 			pagination: pagination,
 			timestamp: new Date().toISOString(),
+			traceId: traceId,
+			metaData: metaData,
 		};
 	}
 
 	public static error<TData>(
 		statusCode?: StatusCodes,
 		message?: string,
-		pagination?: PaginationDataResponseModel
+		pagination?: PaginationDataResponseModel,
+		traceId?: string,
+		metaData?: unknown
 	): DataResponse<TData> {
 		return {
 			success: false,
@@ -52,12 +62,16 @@ export class DataResponseFactory {
 			message: message,
 			pagination: pagination,
 			timestamp: new Date().toISOString(),
+			traceId: traceId,
+			metaData: metaData,
 		};
 	}
 
 	public static async pipelineError<TData>(
 		error: Error | PipelineWorkflowException,
-		queryRunner?: QueryRunner
+		queryRunner?: QueryRunner,
+		traceId?: string,
+		metaData?: unknown
 	): Promise<DataResponse<TData>> {
 		if (queryRunner?.isTransactionActive) {
 			console.log(`queryRunner.isTransactionActive: ${queryRunner.isTransactionActive}`);
@@ -65,11 +79,20 @@ export class DataResponseFactory {
 		}
 
 		if (error instanceof PipelineWorkflowException)
-			return DataResponseFactory.error(error.statusCode, error.message);
+			return DataResponseFactory.error(
+				error.statusCode,
+				error.message,
+				undefined,
+				traceId,
+				metaData
+			);
 
 		return DataResponseFactory.error(
 			StatusCodes.INTERNAL_SERVER_ERROR,
-			error.message ?? 'Unexpected error'
+			error.message ?? 'Unexpected error',
+			undefined,
+			traceId,
+			metaData
 		);
 	}
 }
