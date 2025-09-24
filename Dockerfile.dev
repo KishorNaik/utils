@@ -22,7 +22,7 @@ COPY . .
 RUN npm run start:build
 
 # Expose development ports
-EXPOSE 3000
+#EXPOSE 3000
 
 # Start application in development mode
 CMD ["npm", "run", "start:dev"]
