@@ -1,4 +1,12 @@
-import { createClient, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
+import {
+	createClient,
+	RedisClientType,
+	RedisFunctions,
+	RedisModules,
+	RedisScripts,
+	RespVersions,
+	TypeMapping,
+} from 'redis';
 import { logger } from '../loggers';
 import { Ok, Result } from 'neverthrow';
 import { ResultError } from '../../exceptions/results';
@@ -38,7 +46,13 @@ export const redisCacheCircuitBreaker = new CircuitBreaker(redisOperation, circu
 @Service()
 export class RedisHelper {
 	//private client: RedisClientType;
-	private client?: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+	private client?: RedisClientType<
+		RedisModules,
+		RedisFunctions,
+		RedisScripts,
+		RespVersions,
+		TypeMapping
+	>;
 	private isConnected: boolean = false;
 
 	async init(isLocal: boolean = false) {

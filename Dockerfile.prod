@@ -35,7 +35,7 @@ COPY --from=builder /app/.swcrc ./
 COPY --from=builder /app/.env ./
 
 # Expose production ports
-EXPOSE 8080
+#EXPOSE 8080
 
 # Start application in production mode
 CMD ["npm", "run", "start"]
