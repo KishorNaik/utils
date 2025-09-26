@@ -9,6 +9,7 @@ export namespace TransactionsWrapper {
 	export interface ITransactionDataResponseOptions<TResponse> {
 		queryRunner: QueryRunner;
 		onTransaction: () => Promise<DataResponse<TResponse>>;
+		traceId?: string;
 	}
 
 	export const runDataResponseAsync = async <TResponse>(
@@ -21,12 +22,21 @@ export namespace TransactionsWrapper {
 			);
 
 		if (!params.queryRunner)
-			return DataResponseFactory.error(StatusCodes.BAD_REQUEST, `queryRunner is required`);
+			return DataResponseFactory.error(
+				StatusCodes.BAD_REQUEST,
+				`queryRunner is required`,
+				undefined,
+				params?.traceId,
+				undefined
+			);
 
 		if (!params.onTransaction)
 			return DataResponseFactory.error(
 				StatusCodes.BAD_REQUEST,
-				`onTransaction body is required`
+				`onTransaction body is required`,
+				undefined,
+				params?.traceId,
+				undefined
 			);
 
 		const { queryRunner, onTransaction } = params;
@@ -39,7 +49,12 @@ export namespace TransactionsWrapper {
 			return response;
 		} catch (ex) {
 			const error = ex as Error;
-			return await DataResponseFactory.pipelineError<TResponse>(error, queryRunner);
+			return await DataResponseFactory.pipelineError<TResponse>(
+				error,
+				queryRunner,
+				params?.traceId,
+				undefined
+			);
 		} finally {
 			await queryRunner.release();
 		}
