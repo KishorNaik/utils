@@ -68,16 +68,23 @@ export namespace ExceptionsWrapper {
 	};
 
 	export const tryCatchPipelineAsync = async <T>(
-		onTry: () => Promise<DataResponse<T>>
+		onTry: () => Promise<DataResponse<T>>,
+		traceId?: string
 	): Promise<DataResponse<T>> => {
 		try {
 			if (!onTry)
-				return DataResponseFactory.error(StatusCodes.BAD_REQUEST, 'Action is required');
+				return DataResponseFactory.error(
+					StatusCodes.BAD_REQUEST,
+					'Action is required',
+					undefined,
+					traceId,
+					undefined
+				);
 			const result = await onTry();
 			return result;
 		} catch (ex) {
 			const error = ex as Error;
-			return await DataResponseFactory.pipelineError<T>(error);
+			return await DataResponseFactory.pipelineError<T>(error, undefined, traceId, undefined);
 		}
 	};
 
@@ -85,15 +92,22 @@ export namespace ExceptionsWrapper {
 		onTry: () => Promise<DataResponse<T>>;
 		onFallback?: (response?: DataResponse<T>) => Promise<DataResponse<T>>;
 		onFinally?: () => void | Promise<void>;
+		traceId?: string;
 	}
 
 	export const tryCatchSagaPipelineAsync = async <T>(
 		params: ITryCatchSagaPipelineOptions<T>
 	): Promise<DataResponse<T>> => {
-		const { onTry, onFallback, onFinally } = params;
+		const { onTry, onFallback, onFinally, traceId } = params;
 		try {
 			if (!onTry)
-				return DataResponseFactory.error(StatusCodes.BAD_REQUEST, 'Action is required');
+				return DataResponseFactory.error(
+					StatusCodes.BAD_REQUEST,
+					'Action is required',
+					undefined,
+					traceId,
+					undefined
+				);
 
 			const result = await onTry();
 
@@ -104,7 +118,12 @@ export namespace ExceptionsWrapper {
 			return result;
 		} catch (ex) {
 			const error = ex as Error;
-			const responseError = await DataResponseFactory.pipelineError<T>(error);
+			const responseError = await DataResponseFactory.pipelineError<T>(
+				error,
+				undefined,
+				traceId,
+				undefined
+			);
 			// Try fallback on exception
 			if (onFallback) {
 				return await onFallback(responseError);
