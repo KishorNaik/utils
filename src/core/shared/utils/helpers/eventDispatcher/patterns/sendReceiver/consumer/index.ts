@@ -4,7 +4,7 @@ import { SendReceiverMessageEventDispatcher } from '../../../types';
 export class SendReceiverConsumerEventDispatcher {
 	private handlerMap = new Map<
 		string,
-		(event: SendReceiverMessageEventDispatcher<any>) => Promise<void>
+		Map<(event: any) => Promise<void>, (event: any) => Promise<void>>
 	>();
 
 	constructor(private dispatcher: EventDispatcher) {}
@@ -31,18 +31,40 @@ export class SendReceiverConsumerEventDispatcher {
 		if (!eventType) throw new Error('Event type is required');
 		if (!handler) throw new Error('Handler is required');
 
+		if (!this.handlerMap.has(eventType)) {
+			this.handlerMap.set(
+				eventType,
+				new Map<(event: any) => Promise<void>, (event: any) => Promise<void>>()
+			);
+		}
+
 		const wrapped = async (event: SendReceiverMessageEventDispatcher<T>) => {
 			await handler(event);
 		};
-		this.handlerMap.set(eventType, wrapped);
+
+		this.handlerMap.get(eventType)!.set(handler, wrapped);
 		await this.dispatcher.subscribe(eventType, wrapped);
 	}
 
-	public async unsubscribe<T>(eventType: string): Promise<void> {
-		const wrapped = this.handlerMap.get(eventType);
-		if (!wrapped) throw new Error(`No handler found for event: ${eventType}`);
+	public async unsubscribe<T>(
+		eventType: string,
+		handler: (event: SendReceiverMessageEventDispatcher<T>) => Promise<void>
+	): Promise<void> {
+		const eventHandlers = this.handlerMap.get(eventType);
+		if (!eventHandlers) {
+			throw new Error(`No handlers found for event: ${eventType}`);
+		}
+
+		const wrapped = eventHandlers.get(handler);
+		if (!wrapped) {
+			throw new Error(`Handler not subscribed to event: ${eventType}`);
+		}
 
 		await this.dispatcher.unsubscribe(eventType, wrapped);
-		this.handlerMap.delete(eventType);
+		eventHandlers.delete(handler);
+
+		if (eventHandlers.size === 0) {
+			this.handlerMap.delete(eventType);
+		}
 	}
 }
