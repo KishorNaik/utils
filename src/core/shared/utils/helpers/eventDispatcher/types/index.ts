@@ -12,6 +12,7 @@ export interface RequestReplyMessageEventDispatcher<T> {
 	traceId: string;
 	correlationId: string;
 	timestamp?: string;
+	timeout?: number;
 }
 
 export interface ReplyMessageEventDispatcher<T> {

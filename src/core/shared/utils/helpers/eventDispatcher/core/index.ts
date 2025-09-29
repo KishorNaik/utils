@@ -61,6 +61,20 @@ export class EventDispatcher {
 		});
 	}
 
+	public async onReply<T>(
+		replyType: string,
+		handler: (reply: ReplyMessageEventDispatcher<T>) => void
+	): Promise<void> {
+		this.emitter.on(replyType, handler as any);
+	}
+
+	public async offReply<T>(
+		replyType: string,
+		handler: (reply: ReplyMessageEventDispatcher<T>) => void
+	): Promise<void> {
+		this.emitter.off(replyType, handler as any);
+	}
+
 	public async onReplyOnce<T>(
 		replyType: string,
 		handler: (reply: ReplyMessageEventDispatcher<T>) => Promise<void>

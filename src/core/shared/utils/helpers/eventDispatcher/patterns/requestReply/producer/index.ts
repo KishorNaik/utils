@@ -13,10 +13,15 @@ export class RequestReplyProducerEventDispatcher {
 
 		const replyType = `reply:${data.correlationId}`;
 
+		const timeout = data.timeout ?? 30000; // Default 30s timeout
+
 		return new Promise<ReplyMessageEventDispatcher<TReply>>((resolve, reject) => {
-			const replyHandler = async (
-				reply: ReplyMessageEventDispatcher<TReply>
-			): Promise<void> => {
+			// eslint-disable-next-line no-undef
+			let timeoutId: NodeJS.Timeout;
+
+			const replyHandler = (reply: ReplyMessageEventDispatcher<TReply>): void => {
+				clearTimeout(timeoutId);
+				this.dispatcher.offReply(replyType, replyHandler);
 				try {
 					if (reply.success) {
 						resolve(reply);
@@ -28,7 +33,12 @@ export class RequestReplyProducerEventDispatcher {
 				}
 			};
 
-			this.dispatcher.onReplyOnce(replyType, replyHandler);
+			timeoutId = setTimeout(() => {
+				this.dispatcher.offReply(replyType, replyHandler);
+				reject(new Error(`Request for event '${eventType}' timed out after ${timeout}ms`));
+			}, timeout);
+
+			this.dispatcher.onReply(replyType, replyHandler);
 			this.dispatcher.publishRequest(eventType, data);
 		});
 	}
