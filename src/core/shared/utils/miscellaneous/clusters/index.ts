@@ -1,11 +1,11 @@
 import cluster from 'node:cluster';
 import { availableParallelism } from 'node:os';
-import { Action } from '../../helpers/delegates';
+import { DelegateWrapper } from '../../helpers/delegates';
 
 const numCPUs = availableParallelism();
 //console.log(`[NODE_ENV: ${process.env.NODE_ENV}] Forking ${numCPUs} workers.`);
 
-export const runNodeCluster = (runServer: Action<[undefined]>) => {
+export const runNodeCluster = (runServer: DelegateWrapper.Action<[undefined]>) => {
 	if (cluster.isPrimary) {
 		console.log(`Primary ${process.pid} is running`);
 
