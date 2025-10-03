@@ -145,7 +145,3 @@ export class AesDecryptWrapper<T extends object> implements IAesDecryptWrapper<T
 		}
 	}
 }
-
-export function generateSecureRandomString(length: number): string {
-	return randomBytes(length).toString('base64').slice(0, length);
-}
