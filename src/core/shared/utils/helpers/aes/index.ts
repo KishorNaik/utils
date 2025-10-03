@@ -14,15 +14,21 @@ export class AES {
 		this._encryptionKey = encryptionKey;
 	}
 
+	private getKeyBuffer(): Buffer {
+		if (!this._encryptionKey || typeof this._encryptionKey !== 'string') {
+			throw new Error('Encryption key must be a base64 string');
+		}
+
+		const key = Buffer.from(this._encryptionKey, 'base64');
+		if (key.length !== 32) throw new Error('AES-256 requires a 32-byte key');
+		return key;
+	}
+
 	public encryptAsync(data: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
 				let iv = crypto.randomBytes(this._ivLength);
-				let cipher = crypto.createCipheriv(
-					'aes-256-cbc',
-					Buffer.from(this._encryptionKey),
-					iv
-				);
+				let cipher = crypto.createCipheriv('aes-256-cbc', this.getKeyBuffer(), iv);
 				let encrypted = cipher.update(data);
 
 				encrypted = Buffer.concat([encrypted, cipher.final()]);
@@ -40,11 +46,7 @@ export class AES {
 				let textParts = data.split(':');
 				let iv = Buffer.from(textParts.shift()!, 'hex');
 				let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-				let decipher = crypto.createDecipheriv(
-					'aes-256-cbc',
-					Buffer.from(this._encryptionKey),
-					iv
-				);
+				let decipher = crypto.createDecipheriv('aes-256-cbc', this.getKeyBuffer(), iv);
 				let decrypted = decipher.update(encryptedText);
 
 				decrypted = Buffer.concat([decrypted, decipher.final()]);
