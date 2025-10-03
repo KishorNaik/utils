@@ -43,3 +43,4 @@ export * from '../../shared/utils/miscellaneous/guard/index';
 export * from '../../shared/utils/miscellaneous/cleanUp/index';
 export * from '../../shared/utils/miscellaneous/converters/index';
 export * from '../../shared/utils/helpers/eventDispatcher/index';
+export * from "../../shared/utils/miscellaneous/buffer/index";
