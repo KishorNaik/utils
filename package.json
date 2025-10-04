@@ -4,17 +4,17 @@
 	"description": "Utility functions for express js tsoa boilerplate",
 	"main": "dist/core/index.js",
 	"type": "commonjs",
-  "author": "Kishor Chandrakant Naik",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/KishorNaik/utils.git"
-  },
-  "homepage": "https://github.com/KishorNaik/expressjs_tsoa_boilerplate",
-  "bugs": {
+	"author": "Kishor Chandrakant Naik",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/KishorNaik/utils.git"
+	},
+	"homepage": "https://github.com/KishorNaik/expressjs_tsoa_boilerplate",
+	"bugs": {
 		"url": "https://github.com/KishorNaik/utils/issues"
 	},
-  "readme": "https://github.com/KishorNaik/expressjs_tsoa_boilerplate/blob/main/README.md",
+	"readme": "https://github.com/KishorNaik/expressjs_tsoa_boilerplate/blob/main/README.md",
 	"engines": {
 		"node": ">= 14 <= 24"
 	},
@@ -41,7 +41,6 @@
 		"npm:outdated": "npm outdated",
 		"npm:latest-package-update": "npx npm-check-updates -u"
 	},
-
 	"devDependencies": {
 		"@faker-js/faker": "9.8.0",
 		"@swc/cli": "0.7.8",
