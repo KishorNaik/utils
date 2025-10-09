@@ -21,3 +21,4 @@ export {
 } from 'mediatr-ts';
 export { CronJob } from 'cron';
 export { Enumerable, bcrypt };
+export { ConnectionOptions } from 'bullmq';
