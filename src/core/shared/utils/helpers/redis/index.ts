@@ -13,12 +13,17 @@ import { ResultError } from '../../exceptions/results';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
 import CircuitBreaker from 'opossum';
-import IORedis from 'ioredis';
-import { ConnectionOptions } from 'bullmq';
-import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_USERNAME } from '../../../../config/env';
 import { ResultFactory, ExceptionsWrapper } from '../../miscellaneous/response';
 import { IServiceHandlerAsync } from '../services';
 import winston from 'winston';
+
+export interface IRedisConnectionOptions {
+	host: string;
+	port: number;
+	username?: string;
+	password?: string;
+	db?: number;
+}
 
 const circuitBreakerOptions = {
 	timeout: 5000, // If Redis takes longer than 5 seconds, trigger a failure
@@ -55,10 +60,8 @@ export class RedisHelper {
 	>;
 	private isConnected: boolean = false;
 
-	async init(isLocal: boolean = false) {
-		if (isLocal) {
-			logger.info(`$Host:${REDIS_HOST}:Port:${REDIS_PORT}`);
-
+	async init(options: IRedisConnectionOptions) {
+		if (!options?.username || !options?.password) {
 			this.client = await createClient()
 				.on('error', (err) => {
 					this.isConnected = false;
@@ -77,10 +80,11 @@ export class RedisHelper {
 				})
 				.connect();
 		} else {
-			const url: string = `redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}`;
+			const url: string = `redis://${options?.username}:${options?.password}@${options?.host}:${options?.port}`;
 
 			this.client = await createClient({
 				url: url,
+				database: options?.db ?? undefined,
 			})
 				.on('error', (err) => {
 					this.isConnected = false;
@@ -129,34 +133,11 @@ export class RedisHelper {
 
 	async disconnect(): Promise<void> {
 		if (this.isConnected) {
-			await this.client?.disconnect();
+			await this.client?.destroy();
 			this.isConnected = false;
 		}
 	}
 }
-
-export const getIORedisConnection = (): ConnectionOptions => {
-	const env = process.env.NODE_ENV;
-	const isLocal = env == 'development';
-
-	let connectionOptions: ConnectionOptions;
-
-	if (isLocal) {
-		connectionOptions = {
-			host: REDIS_HOST,
-			port: parseInt(REDIS_PORT!),
-		};
-	} else {
-		connectionOptions = {
-			host: REDIS_HOST,
-			port: parseInt(REDIS_PORT!),
-			username: REDIS_USERNAME,
-			password: REDIS_PASSWORD,
-		};
-	}
-
-	return connectionOptions;
-};
 
 // #region Redis Wrapper
 
@@ -176,9 +157,15 @@ export abstract class RedisStoreWrapper<TParams extends object, TResult extends 
 {
 	private readonly _redisHelper: RedisHelper;
 	private readonly _logger: winston.Logger;
+	private readonly _redisConnectionOptions: IRedisConnectionOptions;
 
-	public constructor(redisHelper: RedisHelper, logger: winston.Logger) {
+	public constructor(
+		redisHelper: RedisHelper,
+		redisConnectionOptions: IRedisConnectionOptions,
+		logger: winston.Logger
+	) {
 		this._redisHelper = redisHelper;
+		this._redisConnectionOptions = redisConnectionOptions;
 		this._logger = logger;
 	}
 
@@ -254,7 +241,7 @@ export abstract class RedisStoreWrapper<TParams extends object, TResult extends 
 			const { env, key, setParams } = params;
 
 			// init Redis Cache
-			await this._redisHelper.init(env === 'development' ? true : false);
+			await this._redisHelper.init(this._redisConnectionOptions);
 			const cacheValueResult = await redisCacheCircuitBreaker.fire(this._redisHelper, key);
 			this._logger.info(`RedisStoreWrapper: Redis init`);
 
