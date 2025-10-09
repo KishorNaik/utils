@@ -203,6 +203,16 @@ export abstract class RedisStoreWrapper<TParams extends object, TResult extends 
 		const result = sourceResult.value;
 		this._logger.info(`RedisStoreWrapper: Fetched data from source for key: ${key}`);
 
+		if (!isValidCacheObject<TResult>(result)) {
+			const errorMessage = `RedisStoreWrapper: Source data for key: ${key} is invalid or malformed (e.g., missing 'version' property). The data will be returned but not cached.`;
+			this._logger.warn(errorMessage);
+			// Return the data without attempting to cache it.
+			return ResultFactory.error(
+				StatusCodes.NOT_FOUND,
+				`missing 'version' property in the entity`
+			);
+		}
+
 		// 2. Attempt to set the fresh data in Redis
 		const setRedisCacheResult = await this._redisHelper.set(key, JSON.stringify(result));
 		if (setRedisCacheResult.isErr()) {
