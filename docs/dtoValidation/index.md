@@ -8,8 +8,8 @@ This utility is located at `src/core/shared/utils/validations/dto/index.ts`.
 
 ## Core Libraries
 
--   **`class-validator`**: A library that allows you to use decorator-based validation. You define validation rules directly on the properties of your DTO classes.
--   **`class-transformer`**: A library used to transform plain (literal) JavaScript objects into instances of a class. This step is essential for `class-validator` to be able to recognize and apply the validation decorators.
+- **`class-validator`**: A library that allows you to use decorator-based validation. You define validation rules directly on the properties of your DTO classes.
+- **`class-transformer`**: A library used to transform plain (literal) JavaScript objects into instances of a class. This step is essential for `class-validator` to be able to recognize and apply the validation decorators.
 
 ## `DtoValidation<Tdto>` Service
 
@@ -21,8 +21,8 @@ This is a `typedi` service that implements `IServiceHandlerAsync` to provide a c
 2.  **Transform:** It uses `class-transformer`'s `plainToInstance` function to convert the plain object into a true instance of the DTO class.
 3.  **Validate:** It uses `class-validator`'s `validateOrReject` function to run all the validation rules defined in the DTO class against the instance.
 4.  **Output:**
-    -   If validation is successful, it returns an `Ok` result.
-    -   If validation fails, it catches the `ValidationError` array, concatenates all the error messages into a single string, and returns an `Err` result containing a `ResultError` with a `400 Bad Request` status code.
+    - If validation is successful, it returns an `Ok` result.
+    - If validation fails, it catches the `ValidationError` array, concatenates all the error messages into a single string, and returns an `Err` result containing a `ResultError` with a `400 Bad Request` status code.
 
 ## Usage Example
 
@@ -35,14 +35,14 @@ First, create a DTO class and add validation decorators from `class-validator` t
 import { IsEmail, IsString, MinLength, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  name: string;
+	@IsString()
+	@IsNotEmpty()
+	@MinLength(2)
+	name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
 }
 ```
 
@@ -57,54 +57,56 @@ import { Body, Post, JsonController } from 'routing-controllers'; // Example wit
 
 @JsonController('/users')
 export class UsersController {
-  private validationService: DtoValidation<CreateUserDto>;
+	private validationService: DtoValidation<CreateUserDto>;
 
-  constructor() {
-    // In a real app, this would be injected by typedi
-    this.validationService = new DtoValidation<CreateUserDto>();
-  }
+	constructor() {
+		// In a real app, this would be injected by typedi
+		this.validationService = new DtoValidation<CreateUserDto>();
+	}
 
-  @Post('/')
-  async createUser(@Body() body: any) {
-    // 1. Validate the incoming body against the DTO
-    const validationResult = await this.validationService.handleAsync({
-      dto: body,
-      dtoClass: CreateUserDto,
-    });
+	@Post('/')
+	async createUser(@Body() body: any) {
+		// 1. Validate the incoming body against the DTO
+		const validationResult = await this.validationService.handleAsync({
+			dto: body,
+			dtoClass: CreateUserDto,
+		});
 
-    // 2. Check the result
-    if (validationResult.isErr()) {
-      // The response will be a 400 Bad Request with a detailed error message
-      throw {
-        statusCode: validationResult.error.statusCode,
-        message: validationResult.error.message,
-      };
-    }
+		// 2. Check the result
+		if (validationResult.isErr()) {
+			// The response will be a 400 Bad Request with a detailed error message
+			throw {
+				statusCode: validationResult.error.statusCode,
+				message: validationResult.error.message,
+			};
+		}
 
-    // 3. If validation passes, proceed with business logic
-    const validatedDto = body as CreateUserDto;
-    console.log('Validation successful. Creating user:', validatedDto.name);
-    // ... logic to create the user
-  }
+		// 3. If validation passes, proceed with business logic
+		const validatedDto = body as CreateUserDto;
+		console.log('Validation successful. Creating user:', validatedDto.name);
+		// ... logic to create the user
+	}
 }
 ```
 
 #### Example Scenarios
 
--   **Valid Request Body:**
+- **Valid Request Body:**
+
     ```json
     {
-      "name": "John Doe",
-      "email": "john.doe@example.com"
+    	"name": "John Doe",
+    	"email": "john.doe@example.com"
     }
     ```
+
     The `validationResult` will be `Ok`, and the controller will proceed.
 
--   **Invalid Request Body:**
+- **Invalid Request Body:**
     ```json
     {
-      "name": "J",
-      "email": "not-an-email"
+    	"name": "J",
+    	"email": "not-an-email"
     }
     ```
     The `validationResult` will be an `Err`, and the error message will be something like: `"name must be longer than or equal to 2 characters, email must be an email"`. The controller will throw a 400 error.

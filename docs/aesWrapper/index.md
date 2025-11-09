@@ -12,32 +12,32 @@ This class contains the fundamental encryption and decryption logic.
 
 ### Security & Implementation Details
 
--   **Algorithm:** `aes-256-cbc`
-    -   **AES-256:** Requires a 256-bit (32-byte) encryption key. The key provided to the class **must be a base64-encoded string that decodes to 32 bytes.**
-    -   **CBC (Cipher Block Chaining):** This mode requires an Initialization Vector (IV) to ensure that encrypting the same plaintext multiple times results in different ciphertexts.
--   **Initialization Vector (IV):** A new, cryptographically random 16-byte IV is generated for **every encryption operation**.
--   **Ciphertext Format:** The `encryptAsync` method prepends the IV to the final ciphertext, separated by a colon (`:`). The resulting string format is `iv_hex:ciphertext_hex`. This is a standard practice, as the IV is not secret and is required for decryption.
+- **Algorithm:** `aes-256-cbc`
+    - **AES-256:** Requires a 256-bit (32-byte) encryption key. The key provided to the class **must be a base64-encoded string that decodes to 32 bytes.**
+    - **CBC (Cipher Block Chaining):** This mode requires an Initialization Vector (IV) to ensure that encrypting the same plaintext multiple times results in different ciphertexts.
+- **Initialization Vector (IV):** A new, cryptographically random 16-byte IV is generated for **every encryption operation**.
+- **Ciphertext Format:** The `encryptAsync` method prepends the IV to the final ciphertext, separated by a colon (`:`). The resulting string format is `iv_hex:ciphertext_hex`. This is a standard practice, as the IV is not secret and is required for decryption.
 
 ### `constructor(encryptionKey: string)`
 
 Initializes the AES utility with a secret key.
 
--   **Parameters:**
-    -   `encryptionKey` (`string`): A **base64-encoded** string that represents a 32-byte (256-bit) key.
+- **Parameters:**
+    - `encryptionKey` (`string`): A **base64-encoded** string that represents a 32-byte (256-bit) key.
 
 ### `encryptAsync(data: string)`
 
 Encrypts a string.
 
--   **Returns:** `Promise<string>` - A promise that resolves to the encrypted string in the format `iv:ciphertext`.
+- **Returns:** `Promise<string>` - A promise that resolves to the encrypted string in the format `iv:ciphertext`.
 
 ### `decryptAsync(data: string)`
 
 Decrypts a string that was encrypted using `encryptAsync`.
 
--   **Parameters:**
-    -   `data` (`string`): The encrypted string in the `iv:ciphertext` format.
--   **Returns:** `Promise<string>` - A promise that resolves to the original plaintext string.
+- **Parameters:**
+    - `data` (`string`): The encrypted string in the `iv:ciphertext` format.
+- **Returns:** `Promise<string>` - A promise that resolves to the original plaintext string.
 
 ## Service Wrappers
 
@@ -47,27 +47,27 @@ These are high-level `typedi` services that wrap the `AES` class to handle the e
 
 A service to encrypt a JavaScript object.
 
--   **Input:** `IAesEncryptParameters<T>`
-    -   `data` (`T`): The object to encrypt.
-    -   `key` (`string`): The base64-encoded 32-byte encryption key.
--   **Process:**
+- **Input:** `IAesEncryptParameters<T>`
+    - `data` (`T`): The object to encrypt.
+    - `key` (`string`): The base64-encoded 32-byte encryption key.
+- **Process:**
     1.  Validates inputs.
     2.  Serializes the `data` object to a JSON string.
     3.  Encrypts the JSON string using the `AES` class.
--   **Output:** `Result<IAesEncryptResult, ResultError>` - A `Result` object containing the encrypted text.
+- **Output:** `Result<IAesEncryptResult, ResultError>` - A `Result` object containing the encrypted text.
 
 ### `AesDecryptWrapper<T extends object>`
 
 A service to decrypt an encrypted string back into a JavaScript object.
 
--   **Input:** `IAesDecryptParameters`
-    -   `data` (`string`): The encrypted string (`iv:ciphertext`).
-    -   `key` (`string`): The base64-encoded 32-byte encryption key.
--   **Process:**
+- **Input:** `IAesDecryptParameters`
+    - `data` (`string`): The encrypted string (`iv:ciphertext`).
+    - `key` (`string`): The base64-encoded 32-byte encryption key.
+- **Process:**
     1.  Validates inputs.
     2.  Decrypts the `data` string using the `AES` class.
     3.  Parses the resulting JSON string back into an object of type `T`.
--   **Output:** `Result<T, ResultError>` - A `Result` object containing the original, decrypted object.
+- **Output:** `Result<T, ResultError>` - A `Result` object containing the original, decrypted object.
 
 ## Usage Example
 
@@ -85,19 +85,19 @@ const aes = new AES(secretKey);
 const originalText = 'This is a secret message.';
 
 async function runEncryption() {
-  try {
-    // 2. Encrypt the data
-    const encrypted = await aes.encryptAsync(originalText);
-    console.log('Encrypted:', encrypted);
+	try {
+		// 2. Encrypt the data
+		const encrypted = await aes.encryptAsync(originalText);
+		console.log('Encrypted:', encrypted);
 
-    // 3. Decrypt the data
-    const decrypted = await aes.decryptAsync(encrypted);
-    console.log('Decrypted:', decrypted);
+		// 3. Decrypt the data
+		const decrypted = await aes.decryptAsync(encrypted);
+		console.log('Decrypted:', decrypted);
 
-    console.log('Match:', originalText === decrypted); // true
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
+		console.log('Match:', originalText === decrypted); // true
+	} catch (error) {
+		console.error('An error occurred:', error);
+	}
 }
 
 runEncryption();
@@ -117,35 +117,35 @@ const encryptService = new AesEncryptWrapper<{ message: string }>();
 const decryptService = new AesDecryptWrapper<{ message: string }>();
 
 async function runWrapperEncryption() {
-  const originalObject = { message: 'This is a secret object.' };
+	const originalObject = { message: 'This is a secret object.' };
 
-  // Encrypt the object
-  const encryptResult = await encryptService.handleAsync({
-    data: originalObject,
-    key: secretKey,
-  });
+	// Encrypt the object
+	const encryptResult = await encryptService.handleAsync({
+		data: originalObject,
+		key: secretKey,
+	});
 
-  if (encryptResult.isErr()) {
-    console.error('Encryption failed:', encryptResult.error.message);
-    return;
-  }
+	if (encryptResult.isErr()) {
+		console.error('Encryption failed:', encryptResult.error.message);
+		return;
+	}
 
-  const encryptedText = encryptResult.value.encryptedText;
-  console.log('Encrypted Object:', encryptedText);
+	const encryptedText = encryptResult.value.encryptedText;
+	console.log('Encrypted Object:', encryptedText);
 
-  // Decrypt the object
-  const decryptResult = await decryptService.handleAsync({
-    data: encryptedText,
-    key: secretKey,
-  });
+	// Decrypt the object
+	const decryptResult = await decryptService.handleAsync({
+		data: encryptedText,
+		key: secretKey,
+	});
 
-  if (decryptResult.isErr()) {
-    console.error('Decryption failed:', decryptResult.error.message);
-    return;
-  }
+	if (decryptResult.isErr()) {
+		console.error('Decryption failed:', decryptResult.error.message);
+		return;
+	}
 
-  const decryptedObject = decryptResult.value;
-  console.log('Decrypted Object:', decryptedObject);
+	const decryptedObject = decryptResult.value;
+	console.log('Decrypted Object:', decryptedObject);
 }
 
 runWrapperEncryption();

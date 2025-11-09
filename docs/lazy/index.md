@@ -14,7 +14,7 @@ The constructor for the `Lazy<T>` class.
 
 **Parameters:**
 
--   `factory` (`() => T`): A function that, when called, returns the value of type `T`. This function is executed only once, the first time the `value` property is accessed.
+- `factory` (`() => T`): A function that, when called, returns the value of type `T`. This function is executed only once, the first time the `value` property is accessed.
 
 ### `get value(): T`
 
@@ -29,13 +29,13 @@ import { Lazy } from './lazy';
 
 // An expensive object to create
 class HeavyObject {
-  constructor() {
-    console.log('HeavyObject created');
-  }
+	constructor() {
+		console.log('HeavyObject created');
+	}
 
-  doSomething() {
-    console.log('Doing something...');
-  }
+	doSomething() {
+		console.log('Doing something...');
+	}
 }
 
 // The factory function for the HeavyObject

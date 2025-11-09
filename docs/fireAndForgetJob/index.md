@@ -14,7 +14,7 @@ Schedules a synchronous, simple function to be executed in the background.
 
 **Parameters:**
 
--   `callBack` (`() => void`): The function to execute. It should not throw any errors, as they will not be caught.
+- `callBack` (`() => void`): The function to execute. It should not throw any errors, as they will not be caught.
 
 **Example:**
 
@@ -24,8 +24,8 @@ import { FireAndForgetWrapper } from './fire-and-forget';
 console.log('Scheduling a simple job.');
 
 FireAndForgetWrapper.Job(() => {
-  // This code runs in the background
-  console.log('Simple fire-and-forget job executed!');
+	// This code runs in the background
+	console.log('Simple fire-and-forget job executed!');
 });
 
 console.log('Main thread continues without waiting.');
@@ -39,9 +39,9 @@ Schedules an asynchronous job to be executed in the background, with support for
 
 The function accepts a single `params` object with the following properties, defined by the `IJobAsync` interface:
 
--   `onRun` (`() => Promise<void>`): The main asynchronous task to execute.
--   `onError` (`(err: Error) => void`): A callback function that is invoked if an error occurs in either the `onRun` or `onCleanup` phases.
--   `onCleanup` (`() => Promise<void>`): An asynchronous function that is guaranteed to be called after `onRun` has completed, regardless of whether it succeeded or failed. It's similar to a `finally` block.
+- `onRun` (`() => Promise<void>`): The main asynchronous task to execute.
+- `onError` (`(err: Error) => void`): A callback function that is invoked if an error occurs in either the `onRun` or `onCleanup` phases.
+- `onCleanup` (`() => Promise<void>`): An asynchronous function that is guaranteed to be called after `onRun` has completed, regardless of whether it succeeded or failed. It's similar to a `finally` block.
 
 **Example:**
 
@@ -51,27 +51,28 @@ import { FireAndForgetWrapper } from './fire-and-forget';
 console.log('Scheduling an async job.');
 
 FireAndForgetWrapper.JobAsync({
-  onRun: async () => {
-    console.log('Async job started...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // Uncomment the line below to simulate an error
-    // throw new Error('Something went wrong during the run!');
-    console.log('Async job finished.');
-  },
-  onError: (err) => {
-    console.error('Caught an error:', err.message);
-  },
-  onCleanup: async () => {
-    console.log('Cleanup logic running...');
-    await new Promise(resolve => setTimeout(resolve, 200));
-    console.log('Cleanup finished.');
-  }
+	onRun: async () => {
+		console.log('Async job started...');
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		// Uncomment the line below to simulate an error
+		// throw new Error('Something went wrong during the run!');
+		console.log('Async job finished.');
+	},
+	onError: (err) => {
+		console.error('Caught an error:', err.message);
+	},
+	onCleanup: async () => {
+		console.log('Cleanup logic running...');
+		await new Promise((resolve) => setTimeout(resolve, 200));
+		console.log('Cleanup finished.');
+	},
 });
 
 console.log('Main thread continues its work.');
 ```
 
 **Output (Success):**
+
 ```
 Scheduling an async job.
 Main thread continues its work.
@@ -82,6 +83,7 @@ Cleanup finished.
 ```
 
 **Output (with Error):**
+
 ```
 Scheduling an async job.
 Main thread continues its work.

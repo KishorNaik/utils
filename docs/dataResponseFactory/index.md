@@ -14,13 +14,13 @@ A generic static method to create a `DataResponse` object. This is the base meth
 
 **Parameters:**
 
--   `success` (boolean, optional): Indicates if the request was successful.
--   `statusCode` (StatusCodes, optional): The HTTP status code of the response.
--   `data` (TData, optional): The payload of the response.
--   `message` (string, optional): A message providing more information about the response.
--   `pagination` (PaginationDataResponseModel, optional): Pagination details, if applicable.
--   `traceId` (string, optional): A unique identifier for tracing the request.
--   `metaData` (unknown, optional): Any additional metadata.
+- `success` (boolean, optional): Indicates if the request was successful.
+- `statusCode` (StatusCodes, optional): The HTTP status code of the response.
+- `data` (TData, optional): The payload of the response.
+- `message` (string, optional): A message providing more information about the response.
+- `pagination` (PaginationDataResponseModel, optional): Pagination details, if applicable.
+- `traceId` (string, optional): A unique identifier for tracing the request.
+- `metaData` (unknown, optional): Any additional metadata.
 
 **Returns:** `DataResponse<TData>` - A structured response object.
 
@@ -31,12 +31,12 @@ import { StatusCodes } from 'http-status-codes';
 import { DataResponseFactory } from './data-response-factory';
 
 const response = DataResponseFactory.response<string>(
-  true,
-  StatusCodes.OK,
-  'User data',
-  'Successfully retrieved user.',
-  undefined,
-  'trace-id-123'
+	true,
+	StatusCodes.OK,
+	'User data',
+	'Successfully retrieved user.',
+	undefined,
+	'trace-id-123'
 );
 ```
 
@@ -46,12 +46,12 @@ A static convenience method to create a successful `DataResponse` object, automa
 
 **Parameters:**
 
--   `statusCode` (StatusCodes, optional): The HTTP status code.
--   `data` (TData, optional): The response payload.
--   `message` (string, optional): A success message.
--   `pagination` (PaginationDataResponseModel, optional): Pagination details.
--   `traceId` (string, optional): The request trace ID.
--   `metaData` (unknown, optional): Additional metadata.
+- `statusCode` (StatusCodes, optional): The HTTP status code.
+- `data` (TData, optional): The response payload.
+- `message` (string, optional): A success message.
+- `pagination` (PaginationDataResponseModel, optional): Pagination details.
+- `traceId` (string, optional): The request trace ID.
+- `metaData` (unknown, optional): Additional metadata.
 
 **Returns:** `DataResponse<TData>` - A successful response object.
 
@@ -62,9 +62,9 @@ import { StatusCodes } from 'http-status-codes';
 import { DataResponseFactory } from './data-response-factory';
 
 const successResponse = DataResponseFactory.success<string>(
-  StatusCodes.OK,
-  'Operation successful',
-  'Data processed.'
+	StatusCodes.OK,
+	'Operation successful',
+	'Data processed.'
 );
 ```
 
@@ -74,11 +74,11 @@ A static convenience method to create an error `DataResponse` object. It automat
 
 **Parameters:**
 
--   `statusCode` (StatusCodes, optional): The HTTP error status code.
--   `message` (string, optional): An error message.
--   `pagination` (PaginationDataResponseModel, optional): Pagination details.
--   `traceId` (string, optional): The request trace ID.
--   `metaData` (unknown, optional): Additional metadata.
+- `statusCode` (StatusCodes, optional): The HTTP error status code.
+- `message` (string, optional): An error message.
+- `pagination` (PaginationDataResponseModel, optional): Pagination details.
+- `traceId` (string, optional): The request trace ID.
+- `metaData` (unknown, optional): Additional metadata.
 
 **Returns:** `DataResponse<TData>` - An error response object.
 
@@ -88,10 +88,7 @@ A static convenience method to create an error `DataResponse` object. It automat
 import { StatusCodes } from 'http-status-codes';
 import { DataResponseFactory } from './data-response-factory';
 
-const errorResponse = DataResponseFactory.error(
-  StatusCodes.NOT_FOUND,
-  'User not found.'
-);
+const errorResponse = DataResponseFactory.error(StatusCodes.NOT_FOUND, 'User not found.');
 ```
 
 ### `pipelineError<TData>(...)`
@@ -100,10 +97,10 @@ An asynchronous static method designed to handle errors that occur within a `Pip
 
 **Parameters:**
 
--   `error` (Error | PipelineWorkflowException): The error object caught.
--   `queryRunner` (QueryRunner, optional): The TypeORM query runner to manage transactions.
--   `traceId` (string, optional): The request trace ID.
--   `metaData` (unknown, optional): Additional metadata.
+- `error` (Error | PipelineWorkflowException): The error object caught.
+- `queryRunner` (QueryRunner, optional): The TypeORM query runner to manage transactions.
+- `traceId` (string, optional): The request trace ID.
+- `metaData` (unknown, optional): Additional metadata.
 
 **Returns:** `Promise<DataResponse<TData>>` - A promise that resolves to an error response object.
 
@@ -115,10 +112,10 @@ import { PipelineWorkflowException } from '../path/to/pipeline/exception';
 import { StatusCodes } from 'http-status-codes';
 
 try {
-  // ... some operation that might fail
-  throw new PipelineWorkflowException(StatusCodes.BAD_REQUEST, 'Invalid input.');
+	// ... some operation that might fail
+	throw new PipelineWorkflowException(StatusCodes.BAD_REQUEST, 'Invalid input.');
 } catch (error) {
-  const errorResponse = await DataResponseFactory.pipelineError(error);
-  // errorResponse will be a formatted error response
+	const errorResponse = await DataResponseFactory.pipelineError(error);
+	// errorResponse will be a formatted error response
 }
 ```

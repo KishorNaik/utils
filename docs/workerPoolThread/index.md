@@ -14,30 +14,30 @@ A static class that manages task registration and execution in a worker pool.
 
 Registers a function that can be executed by a worker thread. A task must be registered before it can be run.
 
--   **Parameters:**
-    -   `name` (`string`): A unique name to identify the task.
-    -   `fn` (`(...args: any[]) => T | Promise<T>`): The function to execute in the worker thread. It can be synchronous or asynchronous.
+- **Parameters:**
+    - `name` (`string`): A unique name to identify the task.
+    - `fn` (`(...args: any[]) => T | Promise<T>`): The function to execute in the worker thread. It can be synchronous or asynchronous.
 
 ### `runTask<T>(name: string, args: any[], options: TaskOptions = {})`
 
 Executes a previously registered task in a worker thread.
 
--   **Parameters:**
-    -   `name` (`string`): The name of the registered task to run.
-    -   `args` (`any[]`): An array of arguments to pass to the task function.
-    -   `options` (`TaskOptions`, optional): An object to configure the task execution:
-        -   `module` (`string`): The name of the worker pool to use. This allows for segmenting tasks into different pools. Defaults to `'default'`.
-        -   `timeoutMs` (`number`): The maximum time in milliseconds to wait for the task to complete. Defaults to `3000`.
-        -   `retries` (`number`): The number of times to retry the task if it fails (due to timeout or other errors). Defaults to `2`.
-        -   `traceId` (`string`): A unique ID for logging and tracing. A default one is generated if not provided.
+- **Parameters:**
+    - `name` (`string`): The name of the registered task to run.
+    - `args` (`any[]`): An array of arguments to pass to the task function.
+    - `options` (`TaskOptions`, optional): An object to configure the task execution:
+        - `module` (`string`): The name of the worker pool to use. This allows for segmenting tasks into different pools. Defaults to `'default'`.
+        - `timeoutMs` (`number`): The maximum time in milliseconds to wait for the task to complete. Defaults to `3000`.
+        - `retries` (`number`): The number of times to retry the task if it fails (due to timeout or other errors). Defaults to `2`.
+        - `traceId` (`string`): A unique ID for logging and tracing. A default one is generated if not provided.
 
--   **Returns:** `Promise<T>` - A `Promise` that resolves with the return value of the task function. It rejects if the task fails after all retries.
+- **Returns:** `Promise<T>` - A `Promise` that resolves with the return value of the task function. It rejects if the task fails after all retries.
 
 ### `terminateAll()`
 
 Gracefully terminates all active worker pools. This should be called during application shutdown to ensure a clean exit.
 
--   **Returns:** `Promise<void>`
+- **Returns:** `Promise<void>`
 
 ## How It Works
 
@@ -59,8 +59,8 @@ import { TaskWorkerThread } from './task-worker-thread';
 
 // A CPU-intensive function (e.g., calculating Fibonacci)
 const fibonacci = (n: number): number => {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
+	if (n <= 1) return n;
+	return fibonacci(n - 1) + fibonacci(n - 2);
 };
 
 // Register the function as a task named 'calculateFibonacci'
@@ -75,21 +75,21 @@ This can be done anywhere in your application where you need the result of the h
 
 ```typescript
 async function performHeavyCalculation() {
-  try {
-    console.log('Offloading Fibonacci calculation to a worker thread...');
-    const result = await TaskWorkerThread.runTask<number>(
-      'calculateFibonacci', // Name of the registered task
-      [40], // Arguments for the fibonacci function
-      {
-        module: 'math-workers', // Use a specific pool for math tasks
-        timeoutMs: 5000, // Allow up to 5 seconds
-        retries: 1
-      }
-    );
-    console.log(`The result of the calculation is: ${result}`);
-  } catch (error) {
-    console.error('The task failed to complete:', error);
-  }
+	try {
+		console.log('Offloading Fibonacci calculation to a worker thread...');
+		const result = await TaskWorkerThread.runTask<number>(
+			'calculateFibonacci', // Name of the registered task
+			[40], // Arguments for the fibonacci function
+			{
+				module: 'math-workers', // Use a specific pool for math tasks
+				timeoutMs: 5000, // Allow up to 5 seconds
+				retries: 1,
+			}
+		);
+		console.log(`The result of the calculation is: ${result}`);
+	} catch (error) {
+		console.error('The task failed to complete:', error);
+	}
 }
 
 performHeavyCalculation();
@@ -101,8 +101,8 @@ Ensure you clean up the worker pools when your application exits.
 
 ```typescript
 process.on('beforeExit', async () => {
-  console.log('Terminating all worker pools...');
-  await TaskWorkerThread.terminateAll();
-  console.log('Pools terminated.');
+	console.log('Terminating all worker pools...');
+	await TaskWorkerThread.terminateAll();
+	console.log('Pools terminated.');
 });
 ```

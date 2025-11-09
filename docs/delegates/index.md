@@ -14,7 +14,7 @@ This utility is located at `src/core/shared/utils/helpers/delegates/index.ts`.
 
 Represents a function that accepts a list of arguments but does not return a value (`void`). This is analogous to the .NET `System.Action` delegate.
 
--   **Signature:** `(...arg: T) => void`
+- **Signature:** `(...arg: T) => void`
 
 #### Usage Example
 
@@ -23,7 +23,7 @@ import { DelegateWrapper } from './delegates';
 
 // This function matches the Action<[string, number]> signature
 const logMessage: DelegateWrapper.Action<[string, number]> = (level, code) => {
-  console.log(`Log Level: ${level}, Code: ${code}`);
+	console.log(`Log Level: ${level}, Code: ${code}`);
 };
 
 logMessage('INFO', 200);
@@ -33,7 +33,7 @@ logMessage('INFO', 200);
 
 Represents a function that accepts a list of arguments and returns a value of type `TResult`. This is analogous to the .NET `System.Func` delegate.
 
--   **Signature:** `(...args: T) => TResult`
+- **Signature:** `(...args: T) => TResult`
 
 #### Usage Example
 
@@ -42,8 +42,8 @@ import { DelegateWrapper } from './delegates';
 
 // This function matches the Func<[number, number], string> signature
 const addAndFormat: DelegateWrapper.Func<[number, number], string> = (a, b) => {
-  const sum = a + b;
-  return `The sum is ${sum}`;
+	const sum = a + b;
+	return `The sum is ${sum}`;
 };
 
 const result = addAndFormat(10, 5);
@@ -54,7 +54,7 @@ console.log(result); // "The sum is 15"
 
 Represents a special type of `Func` that takes a single argument and returns a `boolean` value. Predicates are typically used to test whether an item satisfies a certain condition. This is analogous to the .NET `System.Predicate<T>` delegate.
 
--   **Signature:** `(arg: T) => boolean`
+- **Signature:** `(arg: T) => boolean`
 
 #### Usage Example
 
@@ -62,19 +62,19 @@ Represents a special type of `Func` that takes a single argument and returns a `
 import { DelegateWrapper } from './delegates';
 
 interface User {
-  id: number;
-  isActive: boolean;
+	id: number;
+	isActive: boolean;
 }
 
 // This function matches the Predicate<User> signature
 const isActiveUser: DelegateWrapper.Predicate<User> = (user) => {
-  return user.isActive;
+	return user.isActive;
 };
 
 const users: User[] = [
-  { id: 1, isActive: true },
-  { id: 2, isActive: false },
-  { id: 3, isActive: true },
+	{ id: 1, isActive: true },
+	{ id: 2, isActive: false },
+	{ id: 3, isActive: true },
 ];
 
 const activeUsers = users.filter(isActiveUser);

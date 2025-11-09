@@ -19,23 +19,23 @@ An instance of this class represents a single page of data from a larger set.
 
 ### Properties
 
--   `selectQueryBuilder` (`SelectQueryBuilder<T>`): The TypeORM query builder, already configured with the correct `skip` and `take` values for the current page. You need to execute this (e.g., with `.getMany()`) to get the page's data.
--   `currentPage` (`number`): The current page number (1-based).
--   `totalPages` (`number`): The total number of pages available.
--   `pageSize` (`number`): The number of items per page.
--   `totalCount` (`number`): The total number of items across all pages.
--   `hasPrevious` (`boolean`): A getter that returns `true` if there is a page before the current one.
--   `hasNext` (`boolean`): A getter that returns `true` if there is a page after the current one.
+- `selectQueryBuilder` (`SelectQueryBuilder<T>`): The TypeORM query builder, already configured with the correct `skip` and `take` values for the current page. You need to execute this (e.g., with `.getMany()`) to get the page's data.
+- `currentPage` (`number`): The current page number (1-based).
+- `totalPages` (`number`): The total number of pages available.
+- `pageSize` (`number`): The number of items per page.
+- `totalCount` (`number`): The total number of items across all pages.
+- `hasPrevious` (`boolean`): A getter that returns `true` if there is a page before the current one.
+- `hasNext` (`boolean`): A getter that returns `true` if there is a page after the current one.
 
 ### Static Method: `toPagedListAsync<T>(queryBuilder, pageNumber, pageSize)`
 
 The factory method used to create and configure a `PagedList` instance.
 
--   **Parameters:**
-    -   `queryBuilder` (`SelectQueryBuilder<T>`): The initial TypeORM query builder with all your `where`, `join`, and `orderBy` clauses.
-    -   `pageNumber` (`number`): The desired page number to retrieve.
-    -   `pageSize` (`number`): The number of items to include on the page.
--   **Returns:** `Promise<PagedList<T>>` - A `Promise` that resolves to a new `PagedList` instance.
+- **Parameters:**
+    - `queryBuilder` (`SelectQueryBuilder<T>`): The initial TypeORM query builder with all your `where`, `join`, and `orderBy` clauses.
+    - `pageNumber` (`number`): The desired page number to retrieve.
+    - `pageSize` (`number`): The number of items to include on the page.
+- **Returns:** `Promise<PagedList<T>>` - A `Promise` that resolves to a new `PagedList` instance.
 
 ## Usage Example
 
@@ -50,35 +50,39 @@ import { User } from '../path/to/your/user/entity'; // Your TypeORM entity
 // await createConnection({...});
 
 async function getActiveUsers(pageNumber: number, pageSize: number) {
-  // 1. Get the repository and create a base query
-  const userRepository = getRepository(User);
-  const queryBuilder: SelectQueryBuilder<User> = userRepository.createQueryBuilder('user')
-    .where('user.isActive = :isActive', { isActive: true })
-    .orderBy('user.createdAt', 'DESC');
+	// 1. Get the repository and create a base query
+	const userRepository = getRepository(User);
+	const queryBuilder: SelectQueryBuilder<User> = userRepository
+		.createQueryBuilder('user')
+		.where('user.isActive = :isActive', { isActive: true })
+		.orderBy('user.createdAt', 'DESC');
 
-  // 2. Get the pagination metadata and the configured query builder
-  const pagedList = await PagedList.toPagedListAsync(queryBuilder, pageNumber, pageSize);
+	// 2. Get the pagination metadata and the configured query builder
+	const pagedList = await PagedList.toPagedListAsync(queryBuilder, pageNumber, pageSize);
 
-  // 3. Execute the query on the builder inside the pagedList to get the items
-  const usersOnPage = await pagedList.selectQueryBuilder.getMany();
+	// 3. Execute the query on the builder inside the pagedList to get the items
+	const usersOnPage = await pagedList.selectQueryBuilder.getMany();
 
-  // 4. Return the data and the pagination info
-  return {
-    items: usersOnPage,
-    currentPage: pagedList.currentPage,
-    totalPages: pagedList.totalPages,
-    totalCount: pagedList.totalCount,
-    hasPrevious: pagedList.hasPrevious,
-    hasNext: pagedList.hasNext,
-  };
+	// 4. Return the data and the pagination info
+	return {
+		items: usersOnPage,
+		currentPage: pagedList.currentPage,
+		totalPages: pagedList.totalPages,
+		totalCount: pagedList.totalCount,
+		hasPrevious: pagedList.hasPrevious,
+		hasNext: pagedList.hasNext,
+	};
 }
 
 // --- Fetching page 2, with 10 items per page ---
 (async () => {
-  const result = await getActiveUsers(2, 10);
+	const result = await getActiveUsers(2, 10);
 
-  console.log(`Showing page ${result.currentPage} of ${result.totalPages}`);
-  console.log(`Total users: ${result.totalCount}`);
-  console.log('Users on this page:', result.items.map(u => u.id));
+	console.log(`Showing page ${result.currentPage} of ${result.totalPages}`);
+	console.log(`Total users: ${result.totalCount}`);
+	console.log(
+		'Users on this page:',
+		result.items.map((u) => u.id)
+	);
 })();
 ```

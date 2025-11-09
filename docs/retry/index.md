@@ -14,15 +14,16 @@ This asynchronous function executes a given function and retries it upon failure
 
 The function accepts a single `params` object with the following properties:
 
--   `fn` (`(...args: TArgs) => Promise<Result<T, ResultError>>`): The asynchronous function to execute. It must return a `Promise` that resolves to a `Result` object.
--   `args` (`TArgs`): An array of arguments to pass to the `fn` function.
--   `maxRetry` (`number`): The maximum number of times to attempt the operation.
--   `delay` (`number`, optional): The time in milliseconds to wait between retry attempts. Defaults to `0`.
+- `fn` (`(...args: TArgs) => Promise<Result<T, ResultError>>`): The asynchronous function to execute. It must return a `Promise` that resolves to a `Result` object.
+- `args` (`TArgs`): An array of arguments to pass to the `fn` function.
+- `maxRetry` (`number`): The maximum number of times to attempt the operation.
+- `delay` (`number`, optional): The time in milliseconds to wait between retry attempts. Defaults to `0`.
 
 **Returns:** `Promise<Result<T, ResultError>>` - A `Promise` that resolves to:
--   An `Ok` result containing the successful value if the operation succeeds.
--   An `Err` result if the operation fails after all retry attempts.
--   An `Err` result if an unexpected exception is thrown during execution.
+
+- An `Ok` result containing the successful value if the operation succeeds.
+- An `Err` result if the operation fails after all retry attempts.
+- An `Err` result if an unexpected exception is thrown during execution.
 
 ## Usage Example
 
@@ -37,27 +38,28 @@ import { StatusCodes } from 'http-status-codes';
 
 // An example of an unstable function that might fail.
 const unstableTask = async (name: string): Promise<Result<string, ResultError>> => {
-  console.log(`Attempting to run task for ${name}...`);
-  if (Math.random() < 0.6) { // 60% chance of failure
-    console.error('Task failed!');
-    return ResultFactory.error(StatusCodes.SERVICE_UNAVAILABLE, `${name} failed`);
-  }
-  return ResultFactory.success(`Hello, ${name}!`);
+	console.log(`Attempting to run task for ${name}...`);
+	if (Math.random() < 0.6) {
+		// 60% chance of failure
+		console.error('Task failed!');
+		return ResultFactory.error(StatusCodes.SERVICE_UNAVAILABLE, `${name} failed`);
+	}
+	return ResultFactory.success(`Hello, ${name}!`);
 };
 
 (async () => {
-  const result = await RetryWrapper.runAsync({
-    fn: unstableTask,
-    args: ['Kishor'],
-    maxRetry: 5,
-    delay: 1000 // Wait 1 second between retries
-  });
+	const result = await RetryWrapper.runAsync({
+		fn: unstableTask,
+		args: ['Kishor'],
+		maxRetry: 5,
+		delay: 1000, // Wait 1 second between retries
+	});
 
-  if (result.isOk()) {
-    console.log('✅ Success:', result.value);
-  } else {
-    console.error('❌ Failure after all retries:', result.error.message);
-  }
+	if (result.isOk()) {
+		console.log('✅ Success:', result.value);
+	} else {
+		console.error('❌ Failure after all retries:', result.error.message);
+	}
 })();
 ```
 

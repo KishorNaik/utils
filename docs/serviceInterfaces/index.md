@@ -24,25 +24,25 @@ These interfaces are for services that perform I/O operations or other asynchron
 
 The most common async interface. For a service that takes parameters and returns a meaningful result.
 
--   **Method:** `handleAsync(params: TParams): Promise<Result<TResult, ResultError>>`
+- **Method:** `handleAsync(params: TParams): Promise<Result<TResult, ResultError>>`
 
 ### `IServiceHandlerNoParamsAsync<TResult>`
 
 For an async service that takes no parameters but returns a result (e.g., fetching a list of all items).
 
--   **Method:** `handleAsync(): Promise<Result<TResult, ResultError>>`
+- **Method:** `handleAsync(): Promise<Result<TResult, ResultError>>`
 
 ### `IServiceHandlerVoidAsync<TParams>`
 
 For an async service that takes parameters but does not return any data, other than success or failure (e.g., updating a record).
 
--   **Method:** `handleAsync(params: TParams): Promise<Result<VoidResult, ResultError>>`
+- **Method:** `handleAsync(params: TParams): Promise<Result<VoidResult, ResultError>>`
 
 ### `IServiceHandlerNoParamsVoidAsync`
 
 For an async service that takes no parameters and returns no data (e.g., triggering a background process).
 
--   **Method:** `handleAsync(): Promise<Result<VoidResult, ResultError>>`
+- **Method:** `handleAsync(): Promise<Result<VoidResult, ResultError>>`
 
 ## Synchronous Service Interfaces
 
@@ -52,25 +52,25 @@ These interfaces are for services that perform immediate, synchronous computatio
 
 The most common sync interface. For a service that takes parameters and returns a result.
 
--   **Method:** `handle(params: TParams): Result<TResult, ResultError>`
+- **Method:** `handle(params: TParams): Result<TResult, ResultError>`
 
 ### `IServiceHandlerNoParams<TResult>`
 
 For a sync service that takes no parameters but returns a result.
 
--   **Method:** `handle(): Result<TResult, ResultError>`
+- **Method:** `handle(): Result<TResult, ResultError>`
 
 ### `IServiceHandlerVoid<TParams>`
 
 For a sync service that takes parameters but returns no data.
 
--   **Method:** `handle(params: TParams): Result<VoidResult, ResultError>`
+- **Method:** `handle(params: TParams): Result<VoidResult, ResultError>`
 
 ### `IServiceHandlerNoParamsVoid`
 
 For a sync service that takes no parameters and returns no data.
 
--   **Method:** `handle(): Result<VoidResult, ResultError>`
+- **Method:** `handle(): Result<VoidResult, ResultError>`
 
 ## Usage Example
 
@@ -84,32 +84,31 @@ import { ResultFactory } from '../path/to/result-factory';
 // --- Example 1: A service that fetches a user by ID ---
 
 interface GetUserParams {
-  userId: string;
+	userId: string;
 }
 
 interface User {
-  id: string;
-  name: string;
+	id: string;
+	name: string;
 }
 
 class GetUserService implements IServiceHandlerAsync<GetUserParams, User> {
-  public async handleAsync(params: GetUserParams): Promise<Result<User, any>> {
-    // In a real app, you would fetch from a database
-    if (params.userId === '1') {
-      return ResultFactory.success({ id: '1', name: 'John Doe' });
-    }
-    return ResultFactory.error(404, 'User not found');
-  }
+	public async handleAsync(params: GetUserParams): Promise<Result<User, any>> {
+		// In a real app, you would fetch from a database
+		if (params.userId === '1') {
+			return ResultFactory.success({ id: '1', name: 'John Doe' });
+		}
+		return ResultFactory.error(404, 'User not found');
+	}
 }
-
 
 // --- Example 2: A service that triggers a system cleanup ---
 
 class CleanupService implements IServiceHandlerNoParamsVoid {
-  public handle(): Result<void, any> {
-    // Perform synchronous cleanup tasks
-    console.log('Cleaning up resources...');
-    return ResultFactory.success(undefined); // Using VOID_RESULT would be better
-  }
+	public handle(): Result<void, any> {
+		// Perform synchronous cleanup tasks
+		console.log('Cleaning up resources...');
+		return ResultFactory.success(undefined); // Using VOID_RESULT would be better
+	}
 }
 ```

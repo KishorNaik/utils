@@ -10,7 +10,7 @@ Pauses the execution for a given number of milliseconds.
 
 **Parameters:**
 
--   `ms` (`number`): The number of milliseconds to delay.
+- `ms` (`number`): The number of milliseconds to delay.
 
 **Returns:** `Promise<void>` - A `Promise` that resolves after the specified `ms` have elapsed.
 
@@ -22,15 +22,15 @@ The `delay` function is typically used within an `async` function to wait for a 
 import { delay } from './delay';
 
 async function runWithDelays() {
-  console.log('Starting...');
+	console.log('Starting...');
 
-  await delay(1000); // Wait for 1 second
-  console.log('One second has passed.');
+	await delay(1000); // Wait for 1 second
+	console.log('One second has passed.');
 
-  await delay(2000); // Wait for another 2 seconds
-  console.log('Two more seconds have passed.');
+	await delay(2000); // Wait for another 2 seconds
+	console.log('Two more seconds have passed.');
 
-  console.log('Finished.');
+	console.log('Finished.');
 }
 
 runWithDelays();

@@ -14,8 +14,8 @@ Adds a **required** value to the validation chain. The `validate` method will fa
 
 **Parameters:**
 
--   `value` (`unknown`): The value to check.
--   `keyHint` (`string`, optional): A descriptive name for the value, used to create more informative error messages.
+- `value` (`unknown`): The value to check.
+- `keyHint` (`string`, optional): A descriptive name for the value, used to create more informative error messages.
 
 **Returns:** `GuardWrapper` - The instance of the `GuardWrapper` to allow for method chaining.
 
@@ -25,8 +25,8 @@ Adds an **optional** value to the validation chain. The `validate` method will f
 
 **Parameters:**
 
--   `value` (`unknown`): The value to check.
--   `keyHint` (`string`, optional): A descriptive name for the value.
+- `value` (`unknown`): The value to check.
+- `keyHint` (`string`, optional): A descriptive name for the value.
 
 **Returns:** `GuardWrapper` - The instance of the `GuardWrapper` for chaining.
 
@@ -35,8 +35,9 @@ Adds an **optional** value to the validation chain. The `validate` method will f
 Executes the validation against all the values added via `check` and `optional`. It processes them in the order they were added and returns immediately upon the first failure.
 
 **Returns:** `Result<VoidResult, ResultError>`
--   `Ok<VoidResult>`: If all validations pass.
--   `Err<ResultError>`: If any validation fails, containing a `ResultError` with a `BAD_REQUEST` status code and a message indicating which check failed.
+
+- `Ok<VoidResult>`: If all validations pass.
+- `Err<ResultError>`: If any validation fails, containing a `ResultError` with a `BAD_REQUEST` status code and a message indicating which check failed.
 
 ## Usage Example
 
@@ -45,21 +46,21 @@ import { GuardWrapper } from './guard';
 import { Result } from 'neverthrow';
 
 function processUserData(name: string, age: number | null, email?: string) {
-  const guardResult = new GuardWrapper()
-    .check(name, 'userName')
-    .check(age, 'userAge')
-    .optional(email, 'userEmail')
-    .validate();
+	const guardResult = new GuardWrapper()
+		.check(name, 'userName')
+		.check(age, 'userAge')
+		.optional(email, 'userEmail')
+		.validate();
 
-  if (guardResult.isErr()) {
-    // The guard clause failed, return the error
-    return guardResult;
-  }
+	if (guardResult.isErr()) {
+		// The guard clause failed, return the error
+		return guardResult;
+	}
 
-  // All checks passed, proceed with the logic
-  console.log(`Processing user: ${name}, Age: ${age}, Email: ${email || 'N/A'}`);
-  // ... function logic here
-  return Result.ok({ success: true });
+	// All checks passed, proceed with the logic
+	console.log(`Processing user: ${name}, Age: ${age}, Email: ${email || 'N/A'}`);
+	// ... function logic here
+	return Result.ok({ success: true });
 }
 
 // --- Scenarios ---
@@ -67,7 +68,6 @@ function processUserData(name: string, age: number | null, email?: string) {
 // 1. Valid data
 const result1 = processUserData('John Doe', 30, 'john.doe@example.com');
 if (result1.isErr()) console.error('Failure 1:', result1.error.message);
-
 
 // 2. Missing required value ('name' is an empty string)
 const result2 = processUserData('', 30);

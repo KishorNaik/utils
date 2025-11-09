@@ -14,7 +14,7 @@ Creates a `Result` object representing a successful outcome.
 
 **Parameters:**
 
--   `data` (T): The data to be wrapped in the success result.
+- `data` (T): The data to be wrapped in the success result.
 
 **Returns:** `Result<T, ResultError>` - An `Ok` variant containing the data.
 
@@ -27,7 +27,7 @@ const user = { id: 1, name: 'John Doe' };
 const successResult = ResultFactory.success(user);
 
 if (successResult.isOk()) {
-  console.log(successResult.value); // { id: 1, name: 'John Doe' }
+	console.log(successResult.value); // { id: 1, name: 'John Doe' }
 }
 ```
 
@@ -37,10 +37,10 @@ Creates a `Result` object representing an error outcome. It constructs a `Result
 
 **Parameters:**
 
--   `statusCode` (StatusCodes): The HTTP status code associated with the error.
--   `message` (string): A descriptive error message.
--   `fallbackObject` (object, optional): An object to fall back to, if applicable.
--   `stackTrace` (string, optional): The stack trace of the error.
+- `statusCode` (StatusCodes): The HTTP status code associated with the error.
+- `message` (string): A descriptive error message.
+- `fallbackObject` (object, optional): An object to fall back to, if applicable.
+- `stackTrace` (string, optional): The stack trace of the error.
 
 **Returns:** `Result<T, ResultError>` - An `Err` variant containing a `ResultError`.
 
@@ -50,13 +50,10 @@ Creates a `Result` object representing an error outcome. It constructs a `Result
 import { ResultFactory } from './result-factory';
 import { StatusCodes } from 'http-status-codes';
 
-const errorResult = ResultFactory.error(
-  StatusCodes.NOT_FOUND,
-  'User not found'
-);
+const errorResult = ResultFactory.error(StatusCodes.NOT_FOUND, 'User not found');
 
 if (errorResult.isErr()) {
-  console.error(errorResult.error.message); // 'User not found'
+	console.error(errorResult.error.message); // 'User not found'
 }
 ```
 
@@ -66,7 +63,7 @@ A utility method to ensure a consistent `Result<T, ResultError>` type is returne
 
 **Parameters:**
 
--   `resultError` (`ResultError` | `Result<T, ResultError>`): The error to be normalized into an `Err` result.
+- `resultError` (`ResultError` | `Result<T, ResultError>`): The error to be normalized into an `Err` result.
 
 **Returns:** `Result<T, ResultError>` - An `Err` variant of the result.
 
@@ -81,6 +78,6 @@ const directError = new ResultError(StatusCodes.BAD_REQUEST, 'Invalid input');
 const errorResult = ResultFactory.errorInstance(directError);
 
 if (errorResult.isErr()) {
-  // This is an Err
+	// This is an Err
 }
 ```
