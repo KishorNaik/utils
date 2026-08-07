@@ -32,6 +32,8 @@ This project includes detailed documentation for its core utilities and wrappers
 -   [**`GuardWrapper`**](./docs/guardWrapper/index.md) - A chainable utility for implementing guard clauses, inspired by Swift.
 -   [**`delay`**](./docs/delayWrapper/index.md) - A simple promise-based delay function.
 -   [**`BufferWrapper`**](./docs/bufferWrapper/index.md) - A collection of helpers for working with Node.js Buffers.
+-   [**Collections**](./docs/collections/index.md) - Typed collection classes like `List`, `Dictionary`, `Queue`, `Stack`, and `RandomizedQueue`.
+-   [**LINQ Enumerable**](./docs/linq/index.md) - A lightweight, chainable LINQ-style API for filtering, ordering, mapping, and aggregating sequences.
 -   [**`executeBatchArrayAsync`**](./docs/executeBatchArray/index.md) - A function for processing large arrays in manageable batches.
 -   [**`PagedList<T>` for TypeORM**](./docs/paginationTypeOrmWrapper/index.md) - A utility for simplifying pagination with TypeORM's `SelectQueryBuilder`.
 

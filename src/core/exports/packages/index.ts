@@ -22,3 +22,11 @@ export {
 export { CronJob } from 'cron';
 export { Enumerable, bcrypt };
 export { ConnectionOptions } from 'bullmq';
+export {
+	List,
+	Dictionary,
+	SortedDictionary,
+	Queue,
+	Stack,
+	RandomizedQueue,
+} from 'ts-generic-collections-linq';
