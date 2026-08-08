@@ -1,6 +1,6 @@
 {
 	"name": "@kishornaik/utils",
-	"version": "1.0.16",
+	"version": "1.0.17",
 	"description": "Utility functions for express js tsoa boilerplate",
 	"main": "dist/core/index.js",
 	"type": "commonjs",
